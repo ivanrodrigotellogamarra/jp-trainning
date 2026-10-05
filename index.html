@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese SOV & Kana Training</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- CABECERA PRINCIPAL -->
+    <header class="main-header">
+        <div class="header-title">
+            <h1>Japanese SOV & Kana Training</h1>
+            <p>Constructor gramatical y práctica interactiva de silabarios</p>
+        </div>
+        <div class="mode-switcher">
+            <button class="mode-btn active" onclick="switchMode('builder')">Constructor SOV</button>
+            <button class="mode-btn" onclick="switchMode('minigame')">Kana</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- VISTA 1: CONSTRUCTOR DE ORACIONES -->
+        <section id="view-builder" class="game-view active">
+            
+            <!-- PANEL DE CONTROL / TIEMPOS -->
+            <div class="card control-card">
+                <div class="section-title">Tiempo Verbal</div>
+                <div class="tense-selector">
+                    <button class="tense-btn active" id="btn-present" onclick="setTense('present')">Presente / Futuro</button>
+                    <button class="tense-btn" id="btn-past" onclick="setTense('past')">Pasado</button>
+                    <button class="tense-btn" id="btn-negative" onclick="setTense('negative')">Negativo</button>
+                </div>
+            </div>
+
+            <!-- TABLERO DE ORACIÓN (DROP ZONES) -->
+            <div class="card board-card">
+                <div class="board-header">
+                    <div class="section-title">Construye tu Oración (S - P - O - P - V)</div>
+                    <div class="board-actions">
+                        <button class="btn-secondary" onclick="loadExample()">Ejemplo</button>
+                        <button class="btn-danger" onclick="clearBoard()">Limpiar</button>
+                    </div>
+                </div>
+
+                <div class="sentence-board">
+                    <!-- Sujeto -->
+                    <div class="zone-wrapper">
+                        <div class="drop-zone" id="zone-subject">
+                            <div class="zone-label-watermark">S</div>
+                            <span class="zone-text-label">S Word</span>
+                        </div>
+                    </div>
+
+                    <!-- Partícula 1 -->
+                    <div class="zone-wrapper">
+                        <div class="drop-zone particle-zone" id="zone-p1">
+                            <span class="zone-text-label">Particle</span>
+                        </div>
+                    </div>
+
+                    <!-- Objeto -->
+                    <div class="zone-wrapper">
+                        <div class="drop-zone" id="zone-object">
+                            <div class="zone-label-watermark">O</div>
+                            <span class="zone-text-label">O Word</span>
+                        </div>
+                    </div>
+
+                    <!-- Partícula 2 -->
+                    <div class="zone-wrapper">
+                        <div class="drop-zone particle-zone" id="zone-p2">
+                            <span class="zone-text-label">Particle</span>
+                        </div>
+                    </div>
+
+                    <!-- Verbo -->
+                    <div class="zone-wrapper">
+                        <div class="drop-zone" id="zone-verb">
+                            <div class="zone-label-watermark">V</div>
+                            <span class="zone-text-label">V Word</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SALIDA / RESULTADO -->
+                <div class="output-container">
+                    <!-- Bloques dinámicos de estructura (S, P, O, P, V) -->
+                    <div id="output-breakdown" class="output-breakdown-row"></div>
+                    
+                    <div class="output-main-display">
+                        <div class="output-kanji" id="out-kanji"></div>
+                        <div class="output-romaji" id="out-romaji"></div>
+                    </div>
+                    <button class="btn-primary" onclick="checkAnswer()">Verificar Oración</button>
+                </div>
+            </div>
+
+            <!-- BANCO DE ELEMENTOS (VOCABULARIO Y PARTÍCULAS) -->
+            <div class="builder-panels">
+                <!-- Vocabulario -->
+                <div class="card">
+                    <div class="section-title">Vocabulario (S / O / V)</div>
+                    <div class="add-form">
+                        <input type="text" id="v-kanji" placeholder="Kanji (ej: 猫)">
+                        <input type="text" id="v-furigana" placeholder="Furigana (ej: ねこ)">
+                        <input type="text" id="v-romaji" placeholder="Romaji (ej: neko)">
+                        <button class="btn-add" onclick="addWord('vocab')">+</button>
+                    </div>
+                    <div class="draggable-list" id="vocab-list"></div>
+                </div>
+
+                <!-- Partículas -->
+                <div class="card">
+                    <div class="section-title">Partículas (P)</div>
+                    <div class="add-form">
+                        <input type="text" id="p-kanji" placeholder="Kanji (ej: に)">
+                        <input type="text" id="p-furigana" placeholder="Furigana opcional">
+                        <input type="text" id="p-romaji" placeholder="Romaji (ej: ni)">
+                        <button class="btn-add" onclick="addWord('particle')">+</button>
+                    </div>
+                    <div class="draggable-list" id="particle-list"></div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- VISTA 2: MINIJUEGO KANA -->
+        <section id="view-minigame" class="game-view">
+            
+            <!-- Pantalla de Configuración -->
+            <div id="kana-config-screen" class="card kana-screen active">
+                <div class="kana-config-header">
+                    <h2>Configurar Práctica de Kana</h2>
+                    <p>Selecciona los caracteres que deseas practicar. Puedes elegir grupos enteros o personalizar tu sesión.</p>
+                </div>
+
+                <div class="kana-options-row">
+                    <label><input type="radio" name="script-type" value="hiragana" checked onchange="renderKanaCheckboxes()"> Hiragana</label>
+                    <label><input type="radio" name="script-type" value="katakana" onchange="renderKanaCheckboxes()"> Katakana</label>
+                    <label><input type="radio" name="script-type" value="both" onchange="renderKanaCheckboxes()"> Ambos</label>
+                </div>
+
+                <div class="global-select-buttons">
+                    <button type="button" class="btn-secondary" onclick="toggleAllKana(true)">Seleccionar Todos</button>
+                    <button type="button" class="btn-secondary" onclick="toggleAllKana(false)">Deseleccionar Todos</button>
+                </div>
+
+                <div id="kana-groups-container" class="kana-groups-grid"></div>
+
+                <button class="btn-primary start-game-btn" onclick="startKanaGame()">Comenzar Práctica</button>
+            </div>
+
+            <!-- Pantalla de Juego -->
+            <div id="kana-play-screen" class="card kana-screen" style="display: none;">
+                <div class="game-top-bar">
+                    <button class="btn-secondary" onclick="backToConfig()">← Volver</button>
+                    <div class="game-stats">
+                        <span id="game-correct" style="color: #5a8a52; font-weight: bold;">0</span> aciertos | 
+                        <span id="game-errors-count" style="color: #d17a7a; font-weight: bold;">0</span> errores | 
+                        Racha: <span id="game-streak" style="color: #d4a373; font-weight: bold;">0</span> | 
+                        <span id="game-timer">⏱ 0s</span>
+                    </div>
+                </div>
+
+                <div class="kana-play-container">
+                    <div id="kana-target" class="kana-target-box">あ</div>
+                    <div class="kana-input-area">
+                        <input type="text" id="kana-input" placeholder="Escribe el romaji y presiona Enter..." autocomplete="off" onkeydown="handleKanaInput(event)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pantalla de Resumen -->
+            <div id="kana-summary-screen" class="card kana-screen" style="display: none;">
+                <h2>¡Sesión Finalizada! 🎉</h2>
+                <div class="summary-stats-box">
+                    <p><strong>Tiempo total:</strong> <span id="summary-time">0s</span></p>
+                    <p><strong>Aciertos correctos:</strong> <span id="summary-correct">0</span></p>
+                    <p><strong>Errores totales:</strong> <span id="summary-errors">0</span></p>
+                </div>
+
+                <h3>Desglose de errores a repasar:</h3>
+                <div id="summary-mistakes" class="summary-mistakes-list"></div>
+
+                <button class="btn-primary" onclick="backToConfig()" style="margin-top: 15px;">Volver a Jugar</button>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

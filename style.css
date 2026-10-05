@@ -375,7 +375,7 @@ main {
 
 .builder-panels .card {
     margin-bottom: 0;
-    height: 30px; /* Altura ideal y controlada para ambas tarjetas */
+    height: 300px; /* Altura ideal y controlada para ambas tarjetas */
     display: flex;
     flex-direction: column;
     overflow: hidden; /* Evita que cualquier elemento se salga de los márgenes */
